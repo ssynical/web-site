@@ -17,11 +17,10 @@ const POSTS: Post[] = [
     slug: "hello-world",
     title: "hello world",
     date: "2026-03-03",
-    summary: "first post — more to come.",
+    summary: "first post",
     content: [
-      "this is the first post on this blog. i've been meaning to start writing things down for a while now — thoughts on projects, things i've learned, stuff i find interesting.",
-      "i'll be writing about luau, rust, low-level programming, and whatever else i'm working on at the time. expect posts about parsers, virtual machines, and the occasional rant about tooling.",
-      "more to come. stay tuned.",
+      "this is the first post on this blog. i've been meaning to start writing things down for a while now. just thoughts on projects, things i've learned, stuff i find interesting.",
+      "i'll be writing about luau, rust, low-level programming, and whatever else i'm working on at the time. expect posts about parsers, virtual machines and more. stay tuned.",
     ],
   },
 ]

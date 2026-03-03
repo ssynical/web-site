@@ -29,8 +29,8 @@ const stars_shadow = (stars: Star[]): string =>
   stars.map(({ x, y }) => `${x}px ${y}px #fff`).join(",")
 
 const WORK = [
-  { name: "runluau-renderer", desc: "a renderer made in luau", href: "https://github.com/ssynical/runluau-renderer" },
-  { name: "koralys", desc: "luau decompiler & disassembler", href: "https://github.com/ssynical/koralys" },
+  { name: "runluau-renderer", desc: "a renderer made in luau", href: "https://github.com/ssynical/renderer" },
+  { name: "koralys", desc: "luau decompiler & disassembler", href: "https://github.com/focat69/koralys" },
   { name: "yotsuba", desc: "rv32ima virtual machine for esp32", href: null },
   { name: "iptv", desc: "iptv streaming backend", href: "https://github.com/ssynical/iptv" },
 ] as const
