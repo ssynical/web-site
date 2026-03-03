@@ -17,17 +17,18 @@ const POSTS: Post[] = [
     slug: "hello-world",
     title: "hello world",
     date: "2026-03-03",
-    summary: "first post",
+    summary: "first post — more to come.",
     content: [
-      "this is the first post on this blog. i've been meaning to start writing things down for a while now. just thoughts on projects, things i've learned, stuff i find interesting.",
-      "i'll be writing about luau, rust, low-level programming, and whatever else i'm working on at the time. expect posts about parsers, virtual machines and more. stay tuned.",
+      "this is the first post on this blog. i've been meaning to start writing things down for a while now: thoughts on projects, things i've learned, stuff i find interesting.",
+      "i'll be writing about luau, rust, low-level programming, and whatever else i'm working on at the time. expect posts about parsers, virtual machines.",
+      "more to come. stay tuned.",
     ],
   },
 ]
 
 function Post_Card({ slug, title, date, summary }: Omit<Post, "content">) {
   return (
-    <Link to={`/blog/${slug}`} className="block">
+    <Link to={`/${slug}`} className="block">
       <article
         className="px-5 py-4 rounded-lg transition-all duration-200 hover:brightness-125 cursor-pointer"
         style={{ background: C.bg_subtle, border: `1px solid ${C.border}` }}
@@ -44,7 +45,7 @@ function Post_View({ post }: { post: Post }) {
   return (
     <>
       <Link
-        to="/blog"
+        to="/"
         className="text-sm font-mono transition-colors duration-200 hover:underline"
         style={{ color: C.accent }}
       >
@@ -67,13 +68,13 @@ function Blog_List() {
   return (
     <>
       <header className="mb-10">
-        <Link
-          to="/"
+        <a
+          href="https://jiface.com"
           className="text-sm font-mono transition-colors duration-200 hover:underline"
           style={{ color: C.accent }}
         >
           &lt;-- jiface
-        </Link>
+        </a>
         <h1 className="text-3xl sm:text-4xl font-bold mt-4 tracking-tight" style={{ color: C.heading }}>blog</h1>
         <p className="mt-2 text-sm" style={{ color: C.muted }}>thoughts, notes, and things i've learned</p>
       </header>

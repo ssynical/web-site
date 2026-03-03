@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react"
-import { Link } from "react-router-dom"
 import "./App.css"
 
 const C = {
@@ -203,13 +202,13 @@ export default function App() {
             </section>
 
             <section>
-              <Link
-                to="/blog"
+              <a
+                href="https://blog.jiface.com"
                 className="text-sm font-mono transition-colors duration-200 hover:underline"
                 style={{ color: C.accent }}
               >
                 blog --&gt;
-              </Link>
+              </a>
             </section>
           </main>
         </Glass_Panel>
