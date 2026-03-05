@@ -238,7 +238,7 @@ function Presence() {
                 <div className="mt-1.5 flex items-center gap-2">
                   <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
                     <div
-                      className="h-full rounded-full transition-all duration-1000"
+                      className="h-full rounded-full"
                       style={{
                         background: C.accent,
                         width: `${Math.min(100, ((Date.now() - spotify.timestamps.start) / (spotify.timestamps.end - spotify.timestamps.start)) * 100)}%`,
