@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import "./App.css"
 
 const C = {
@@ -122,6 +122,199 @@ function Code({ children }: { children: React.ReactNode }) {
   )
 }
 
+const DISCORD_ID = "1460413830394937477"
+
+type LanyardActivity = {
+  name: string
+  details?: string
+  state?: string
+  type: number
+  assets?: { large_image?: string; large_url?: string; small_image?: string }
+  timestamps?: { start?: number; end?: number }
+  application_id?: string
+}
+
+type LanyardData = {
+  discord_status: "online" | "idle" | "dnd" | "offline"
+  discord_user: { avatar: string; display_name: string; username: string; id: string }
+  activities: LanyardActivity[]
+  listening_to_spotify: boolean
+  spotify: {
+    track_id: string
+    song: string
+    artist: string
+    album: string
+    album_art_url: string
+    timestamps: { start: number; end: number }
+  } | null
+}
+
+const STATUS_COLORS: Record<string, string> = {
+  online: "#3ba55d",
+  idle: "#faa81a",
+  dnd: "#ed4245",
+  offline: "#747f8d",
+}
+
+function use_lanyard(): LanyardData | null {
+  const [data, set_data] = useState<LanyardData | null>(null)
+  useEffect(() => {
+    let alive = true
+    const poll = async () => {
+      try {
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
+        const json = await res.json()
+        if (alive && json.success) set_data(json.data)
+      } catch { /* silent :shushing_face: */ }
+    }
+    poll()
+    const id = setInterval(poll, 30_000)
+    return () => { alive = false; clearInterval(id) }
+  }, [])
+  return data
+}
+
+function format_elapsed(start: number): string {
+  const diff = Math.floor((Date.now() - start) / 1000)
+  const m = Math.floor(diff / 60)
+  const s = diff % 60
+  return `${m}:${s.toString().padStart(2, "0")}`
+}
+
+function Presence() {
+  const data = use_lanyard()
+  const [, set_tick] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => set_tick((t) => t + 1), 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  if (!data) return null
+
+  const status = data.discord_status
+  const activity = data.activities.find((a) => a.type === 0)
+  const listening = data.activities.find((a) => a.type === 2)
+  const spotify = data.spotify
+
+  const has_content = status !== "offline" || activity || listening || spotify
+  if (!has_content) return null
+
+  const resolve_art = (img?: string): string | null => {
+    if (!img) return null
+    if (img.startsWith("mp:external/")) return `https://media.discordapp.net/${img.replace("mp:", "")}`
+    return null
+  }
+
+  return (
+    <section className="mb-10">
+      <div
+        className="rounded-lg p-4 flex flex-col gap-3"
+        style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${C.glass_border}` }}
+      >
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-block w-2 h-2 rounded-full flex-shrink-0"
+            style={{ background: STATUS_COLORS[status] ?? STATUS_COLORS.offline }}
+          />
+          <span className="text-xs font-mono" style={{ color: C.muted }}>
+            {status === "dnd" ? "do not disturb" : status}
+          </span>
+        </div>
+
+        {spotify && (
+          <div className="flex items-center gap-3">
+            <img
+              src={spotify.album_art_url}
+              alt={spotify.album}
+              width={48}
+              height={48}
+              className="rounded flex-shrink-0"
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold truncate" style={{ color: C.heading }}>{spotify.song}</p>
+              <p className="text-xs truncate" style={{ color: C.muted }}>{spotify.artist}</p>
+              {spotify.timestamps && (
+                <div className="mt-1.5 flex items-center gap-2">
+                  <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                    <div
+                      className="h-full rounded-full transition-all duration-1000"
+                      style={{
+                        background: C.accent,
+                        width: `${Math.min(100, ((Date.now() - spotify.timestamps.start) / (spotify.timestamps.end - spotify.timestamps.start)) * 100)}%`,
+                      }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-mono flex-shrink-0" style={{ color: C.muted }}>
+                    {format_elapsed(spotify.timestamps.start)}
+                  </span>
+                </div>
+              )}
+            </div>
+            <svg viewBox="0 0 24 24" width={16} height={16} className="flex-shrink-0" style={{ fill: "#1db954" }}>
+              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+            </svg>
+          </div>
+        )}
+
+        {!spotify && listening && (
+          <div className="flex items-center gap-3">
+            {resolve_art(listening.assets?.large_image) && (
+              <img
+                src={resolve_art(listening.assets?.large_image)!}
+                alt={listening.name}
+                width={48}
+                height={48}
+                className="rounded flex-shrink-0"
+              />
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-mono mb-0.5" style={{ color: C.muted }}>listening on {listening.name.toLowerCase()}</p>
+              {listening.details && <p className="text-sm font-semibold truncate" style={{ color: C.heading }}>{listening.details}</p>}
+              {listening.state && <p className="text-xs truncate" style={{ color: C.muted }}>{listening.state}</p>}
+              {listening.timestamps?.start && (
+                <div className="mt-1.5 flex items-center gap-2">
+                  {listening.timestamps.end ? (
+                    <>
+                      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                        <div
+                          className="h-full rounded-full transition-all duration-1000"
+                          style={{
+                            background: C.accent,
+                            width: `${Math.min(100, ((Date.now() - listening.timestamps.start) / (listening.timestamps.end - listening.timestamps.start)) * 100)}%`,
+                          }}
+                        />
+                      </div>
+                      <span className="text-[10px] font-mono flex-shrink-0" style={{ color: C.muted }}>
+                        {format_elapsed(listening.timestamps.start)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-[10px] font-mono" style={{ color: C.muted }}>
+                      {format_elapsed(listening.timestamps.start)} elapsed
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activity && (
+          <div className="flex items-center gap-3">
+            <div className="min-w-0">
+              <p className="text-xs font-mono mb-0.5" style={{ color: C.muted }}>playing</p>
+              <p className="text-sm font-semibold truncate" style={{ color: C.heading }}>{activity.name}</p>
+              {activity.details && <p className="text-xs truncate" style={{ color: C.muted }}>{activity.details}</p>}
+              {activity.state && <p className="text-xs truncate" style={{ color: C.muted }}>{activity.state}</p>}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
 export default function App() {
   useEffect(() => {
     const s = document.createElement("style")
@@ -204,6 +397,8 @@ export default function App() {
                 ))}
               </div>
             </section>
+
+            <Presence />
 
             <section>
               <a
