@@ -46,8 +46,12 @@ const LINKS = [
   { label: "discord", href: "https://discord.com/users/1460413830394937477" },
 ] as const
 
+const BADGE_TARGETS = ["https://vft.rip", "https://mambo.pet"] as const // :)
+
+const random_badge_href = () => BADGE_TARGETS[Math.floor(Math.random() * BADGE_TARGETS.length)]
+
 const BADGES = [
-  "/yourad.gif", "/yourad.gif", "/yourad.gif",
+  "/me.gif", "/yourad.gif", "/yourad.gif",
   "/yourad.gif", "/yourad.gif", "/yourad.gif",
 ] as const
 
@@ -214,10 +218,33 @@ export default function App() {
         </Glass_Panel>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-1">
-          {BADGES.map((src, i) => (
-            <img key={i} src={src} alt="badge" width={88} height={31} className="block" style={{ imageRendering: "pixelated" }} />
-          ))}
+          {BADGES.map((src, i) => {
+            const is_me = src === "/me.gif"
+            return is_me ? (
+              <a key={i} href={random_badge_href()} target="_blank" rel="noopener noreferrer">
+                <img src={src} alt="badge" width={88} height={31} className="block transition-opacity hover:opacity-80" style={{ imageRendering: "pixelated" }} />
+              </a>
+            ) : (
+              <img key={i} src={src} alt="badge" width={88} height={31} className="block" style={{ imageRendering: "pixelated" }} />
+            )
+          })}
         </div>
+
+        <a
+          href="https://ipv6.he.net/"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="I'm IPv6 certified!"
+          className="mt-4 block transition-opacity hover:opacity-80"
+        >
+          <img
+            src="//ipv6.he.net/certification/create_badge.php?pass_name=jiface&badge=1"
+            alt="IPv6 Certification Badge for jiface"
+            width={128}
+            height={128}
+            style={{ border: 0 }}
+          />
+        </a>
       </div>
 
       <svg xmlns="http://www.w3.org/2000/svg" style={{ display: "none" }}>
