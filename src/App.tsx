@@ -51,7 +51,7 @@ const BADGE_TARGETS = ["https://vft.rip", "https://mambo.pet"] as const // :)
 const random_badge_href = () => BADGE_TARGETS[Math.floor(Math.random() * BADGE_TARGETS.length)]
 
 const BADGES = [
-  "/me.gif", "/yourad.gif", "/yourad.gif",
+  "/jiface.gif", "/vft.gif", "/yourad.gif",
   "/yourad.gif", "/yourad.gif", "/yourad.gif",
 ] as const
 
