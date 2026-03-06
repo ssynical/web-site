@@ -433,21 +433,46 @@ export default function App() {
           })}
         </div>
 
-        <a
-          href="https://ipv6.he.net/"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="I'm IPv6 certified!"
-          className="mt-4 block transition-opacity hover:opacity-80"
-        >
-          <img
-            src="//ipv6.he.net/certification/create_badge.php?pass_name=jiface&badge=1"
-            alt="IPv6 Certification Badge for jiface"
-            width={128}
-            height={128}
-            style={{ border: 0 }}
-          />
-        </a>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-4">
+          <a
+            href="https://ipv6.he.net/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="I'm IPv6 certified!"
+            className="block transition-opacity hover:opacity-80"
+          >
+            <img
+              src="//ipv6.he.net/certification/create_badge.php?pass_name=jiface&badge=1"
+              alt="IPv6 Certification Badge for jiface"
+              width={128}
+              height={128}
+              style={{ border: 0 }}
+            />
+          </a>
+          <a
+            href="https://www.abuseipdb.com/user/278046"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="AbuseIPDB is an IP address blacklist for webmasters and sysadmins to report IP addresses engaging in abusive behavior on their networks"
+            className="block transition-opacity hover:opacity-80"
+          >
+            <img
+              src="https://www.abuseipdb.com/contributor/278046.svg"
+              alt="AbuseIPDB Contributor Badge"
+              width={182}
+              style={{
+                borderRadius: 5,
+                borderTop: "5px solid #058403",
+                borderRight: "5px solid #111",
+                borderBottom: "5px solid #111",
+                borderLeft: "5px solid #058403",
+                padding: 5,
+                background: "#35c246 linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.3) 50%, rgba(0,0,0,.2) 51%, rgba(0,0,0,0))",
+                boxShadow: "2px 2px 1px 1px rgba(0, 0, 0, .2)",
+              }}
+            />
+          </a>
+        </div>
       </div>
 
       <svg xmlns="http://www.w3.org/2000/svg" style={{ display: "none" }}>
