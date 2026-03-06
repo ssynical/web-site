@@ -175,10 +175,18 @@ function use_lanyard(): LanyardData | null {
 }
 
 function format_elapsed(start: number): string {
-  const diff = Math.floor((Date.now() - start) / 1000)
-  const m = Math.floor(diff / 60)
-  const s = diff % 60
-  return `${m}:${s.toString().padStart(2, "0")}`
+  let diff = Math.floor((Date.now() - start) / 1000)
+  const units: [string, number][] = [["y", 31536000], ["mo", 2592000], ["w", 604800], ["d", 86400], ["h", 3600], ["m", 60], ["s", 1]]
+  const parts: string[] = []
+  for (const [label, secs] of units) {
+    const val = Math.floor(diff / secs)
+    if (val > 0 || label === "s") {
+      diff %= secs
+      if (parts.length > 0) parts.push(`${String(val).padStart(2, "0")}${label}`)
+      else parts.push(`${val}${label}`)
+    }
+  }
+  return parts.join(" ")
 }
 
 function Presence() {
