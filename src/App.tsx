@@ -414,8 +414,8 @@ export default function App() {
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-1">
           {BADGES.map((src, i) => {
-            const is_me = src === "/me.gif"
-            return is_me ? (
+            const is_vft = src === "/vft.gif"
+            return is_vft ? (
               <a key={i} href={random_badge_href()} target="_blank" rel="noopener noreferrer">
                 <img src={src} alt="badge" width={88} height={31} className="block transition-opacity hover:opacity-80" style={{ imageRendering: "pixelated" }} />
               </a>
