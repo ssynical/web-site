@@ -168,7 +168,7 @@ function use_lanyard(): LanyardData | null {
       } catch { /* silent :shushing_face: */ }
     }
     poll()
-    const id = setInterval(poll, 30_000)
+    const id = setInterval(poll, 10_000)
     return () => { alive = false; clearInterval(id) }
   }, [])
   return data
