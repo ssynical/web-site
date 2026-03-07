@@ -265,7 +265,7 @@ var e = [
 ];
 \`\`\`
 
-registers start at index 0 in the \`Q\` array (sub-state). the instruction pointer lives at \`e.Q[0]\`. register 2 is always the return value. this is a flat register-based VM, not stack-based.
+registers start at index 0 in the \`Q\` array (sub-state). the instruction pointer lives at \`e.Q[0]\`. register 2 is always the return value. this tells us this is a flat register-based vm, instead of stack-based.
 
 ## helper functions
 
@@ -314,7 +314,7 @@ strings in the table are encoded with a bitwise transform:
 String.fromCharCode(S & 4294967232 | S * 41 & 63)
 \`\`\`
 
-that's \`charCode & 0xFFFFFFC0 | charCode * 41 & 0x3F\`. the upper 26 bits are preserved, and the lower 6 bits are scrambled by multiplying by 41 and masking. it's a simple reversible transformation — just enough to prevent string extraction by grep.
+that's \`charCode & 0xFFFFFFC0 | charCode * 41 & 0x3F\`. the upper 26 bits are preserved, and the lower 6 bits are scrambled by multiplying by 41 and masking. it's a simple reversible transformation, just enough to prevent string extraction by grep.
 
 ## the instruction set: proxy-based lazy decoding
 
