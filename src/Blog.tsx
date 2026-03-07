@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import type { Components } from "react-markdown"
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 
 const C = {
   bg: "#0a0e17",
@@ -15,6 +16,39 @@ const C = {
   code_border: "rgba(80, 110, 170, 0.15)",
   code_text: "#8aa4d6",
 } as const
+
+const site_theme: Record<string, React.CSSProperties> = {
+  'code[class*="language-"]': { color: "#c5cad8", background: "none", fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace", fontSize: "0.875rem", lineHeight: "1.6", textAlign: "left", whiteSpace: "pre", wordSpacing: "normal", wordBreak: "normal", tabSize: 2, hyphens: "none" },
+  'pre[class*="language-"]': { color: "#c5cad8", background: "#0d1120", fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace", fontSize: "0.875rem", lineHeight: "1.6", textAlign: "left", whiteSpace: "pre", wordSpacing: "normal", wordBreak: "normal", tabSize: 2, hyphens: "none", padding: "1rem", margin: "0", overflow: "auto", borderRadius: "0.5rem" },
+  comment: { color: "#4a5680", fontStyle: "italic" },
+  prolog: { color: "#4a5680" },
+  doctype: { color: "#4a5680" },
+  cdata: { color: "#4a5680" },
+  punctuation: { color: "#6b7a9e" },
+  property: { color: "#8aa4d6" },
+  tag: { color: "#8aa4d6" },
+  boolean: { color: "#d4a0e0" },
+  number: { color: "#d4a0e0" },
+  constant: { color: "#d4a0e0" },
+  symbol: { color: "#d4a0e0" },
+  selector: { color: "#a3d6a0" },
+  "attr-name": { color: "#a3d6a0" },
+  string: { color: "#a3d6a0" },
+  char: { color: "#a3d6a0" },
+  builtin: { color: "#a3d6a0" },
+  inserted: { color: "#a3d6a0" },
+  operator: { color: "#c5cad8" },
+  entity: { color: "#c5cad8", cursor: "help" },
+  url: { color: "#c5cad8" },
+  "attr-value": { color: "#a3d6a0" },
+  keyword: { color: "#6b8acc" },
+  function: { color: "#dce0ee" },
+  "class-name": { color: "#dce0ee" },
+  regex: { color: "#e0c090" },
+  important: { color: "#e0c090", fontWeight: "bold" },
+  variable: { color: "#c5cad8" },
+  deleted: { color: "#e07070" },
+}
 
 type Post = { slug: string; title: string; date: string; summary: string; content: string }
 
@@ -395,7 +429,7 @@ the opcode ids are **shuffled per script generation**. the mapping from bytecode
 
 the overall architecture is a register-based bytecode vm with a flat instruction array, scope chain for variable resolution, and structured exception handling. it's compact, reasonably fast, and... difficult... to statically analyze without running it.
 
-that's all for this one, folks! see you all next time.`,
+that's all for this one, folks! see you all next time.`,  
   },
 ]
 
@@ -422,12 +456,18 @@ const md_components: Components = {
     <a href={href} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: C.accent }}>{children}</a>
   ),
   code: ({ className, children }) => {
-    const is_block = className?.includes("language-") || false
-    if (is_block) {
+    const match = className?.match(/language-(\w+)/)
+    if (match) {
       return (
-        <code className="block text-xs sm:text-sm font-mono leading-relaxed" style={{ color: C.code_text }}>
-          {children}
-        </code>
+        <div className="my-4 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+          <SyntaxHighlighter
+            language={match[1]}
+            style={site_theme}
+            customStyle={{ margin: 0, background: C.bg_subtle, padding: "1rem" }}
+          >
+            {String(children).replace(/\n$/, "")}
+          </SyntaxHighlighter>
+        </div>
       )
     }
     return (
@@ -440,12 +480,7 @@ const md_components: Components = {
     )
   },
   pre: ({ children }) => (
-    <pre
-      className="rounded-lg p-4 my-4 overflow-x-auto"
-      style={{ background: C.bg_subtle, border: `1px solid ${C.border}` }}
-    >
-      {children}
-    </pre>
+    <>{children}</>
   ),
   ul: ({ children }) => (
     <ul className="list-disc list-inside space-y-1 mb-4 text-sm sm:text-base" style={{ color: C.text }}>{children}</ul>
@@ -544,7 +579,7 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen" style={{ background: C.bg, color: C.text }}>
-      <div className="max-w-xl mx-auto px-5 sm:px-8 py-12 sm:py-20">
+      <div className="max-w-3xl mx-auto px-5 sm:px-8 py-12 sm:py-20">
         {post ? <Post_View post={post} /> : <Blog_List />}
       </div>
     </div>
